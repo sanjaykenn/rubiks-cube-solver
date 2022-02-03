@@ -1,0 +1,3 @@
+[submodule "rubiks-cube-gui"]
+	path = rubiks-cube-gui
+	url = git@github.com:sanjaykenn/rubiks-cube-gui.git
