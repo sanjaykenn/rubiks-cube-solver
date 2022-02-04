@@ -1,17 +1,44 @@
 import argparse
 import http.server
+import json
 import logging
 import os
 import socketserver
+import time
+import urllib.parse
+
+import kociemba
+
+
+logger = logging.getLogger("Rubik's Cube Solver")
 
 
 class RubiksCubeHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 	def do_GET(self):
 		if self.path.startswith('/solve'):
+			query = urllib.parse.parse_qs(urllib.parse.urlparse(self.path).query)
+
+			if 'scramble' not in query:
+				self.send_error(400)
+				return
+
+			data = {}
+
+			try:
+				logger.info(f'Solving scramble {query["scramble"][0]}')
+				t = time.time()
+				data['solution'] = kociemba.solve(query['scramble'][0])
+				data['time'] = time.time() - t
+				logger.info(f'Solved scramble {query["scramble"][0]}: {data["solution"]}')
+			except ValueError:
+				logger.error(f'Invalid scramble {query["scramble"][0]}')
+				self.send_error(400)
+				return
+
 			self.send_response(200)
-			self.send_header('Content-type', 'text/plain')
+			self.send_header('Content-type', 'application/json')
 			self.end_headers()
-			self.wfile.write(b"R U R' U'")
+			self.wfile.write(json.dumps(data).encode())
 		else:
 			return http.server.SimpleHTTPRequestHandler.do_GET(self)
 
@@ -26,7 +53,6 @@ if __name__ == '__main__':
 
 	os.chdir(args.directory)
 
-	logger = logging.getLogger("Rubik's Cube Solver")
 	logger.addHandler(logging.StreamHandler())
 	logger.setLevel(logging.INFO)
 
