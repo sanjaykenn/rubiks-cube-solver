@@ -27,7 +27,7 @@ class RubiksCubeHTTPRequestHandler(http.server.SimpleHTTPRequestHandler):
 			try:
 				logger.info(f'Solving scramble {query["scramble"][0]}')
 				t = time.time()
-				data['solution'] = kociemba.solve(query['scramble'][0])
+				data['solution'] = kociemba.solve(query['scramble'][0], max_depth=20)
 				data['time'] = time.time() - t
 				logger.info(f'Solved scramble {query["scramble"][0]}: {data["solution"]}')
 			except ValueError:
