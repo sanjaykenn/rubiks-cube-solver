@@ -48,7 +48,7 @@ def main():
 	parser.add_argument('--port', type=int, default=80, help='Webserver port')
 	parser.add_argument('--ws-host', default='0.0.0.0', help='Websocket server host')
 	parser.add_argument('--ws-port', type=int, default=8080, help='Websocket server port')
-	parser.add_argument('--max-depth', type=int, default=8080, help='Kociemba algorithm max depth')
+	parser.add_argument('--max-depth', type=int, default=20, help='Kociemba algorithm max depth')
 
 	args = parser.parse_args()
 
